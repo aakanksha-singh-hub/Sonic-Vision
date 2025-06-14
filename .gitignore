@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Proxy server specific
+proxy-server/node_modules
+
+# Build artifacts and temporary files
+*.node
+*.exe
