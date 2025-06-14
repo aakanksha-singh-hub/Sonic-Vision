@@ -1,0 +1,14 @@
+{
+  "name": "lyrics-proxy-server",
+  "version": "1.0.0",
+  "description": "Proxy server for lyrics API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "axios": "^1.10.0"
+  }
+} 
