@@ -3,8 +3,6 @@ import { Theme } from './MusicPlayer';
 
 interface KaraokeInterfaceProps {
   currentTime: number;
-  isRecording: boolean;
-  score: number;
   theme: Theme;
   lyrics?: string;
   artist?: string;
@@ -12,18 +10,15 @@ interface KaraokeInterfaceProps {
   isLoadingLyrics?: boolean;
 }
 
-const KaraokeInterface: React.FC<KaraokeInterfaceProps> = ({ 
-  currentTime, 
-  isRecording, 
-  score, 
-  theme, 
+const KaraokeInterface: React.FC<KaraokeInterfaceProps> = ({
+  currentTime,
+  theme,
   lyrics,
   artist,
   title,
   isLoadingLyrics 
 }) => {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [showScore, setShowScore] = useState(false);
   const [lyricsLines, setLyricsLines] = useState<string[]>([]);
 
   // Process lyrics into lines
@@ -51,14 +46,6 @@ const KaraokeInterface: React.FC<KaraokeInterfaceProps> = ({
       }
     }
   }, [currentTime, lyricsLines.length, currentLineIndex]);
-
-  useEffect(() => {
-    if (score > 0) {
-      setShowScore(true);
-      const timer = setTimeout(() => setShowScore(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [score]);
 
   const getLyricStyle = (index: number) => {
     if (index === currentLineIndex) {
@@ -99,33 +86,7 @@ const KaraokeInterface: React.FC<KaraokeInterfaceProps> = ({
     <div className="bg-black/30 backdrop-blur-lg rounded-2xl p-8 border border-white/10 relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {isRecording && (
-          <>
-            {/* Animated background particles */}
-            {[...Array(10)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute rounded-full animate-ping"
-                style={{
-                  background: `radial-gradient(circle, ${theme.colors.primary}, transparent)`,
-                  width: Math.random() * 10 + 5 + 'px',
-                  height: Math.random() * 10 + 5 + 'px',
-                  left: Math.random() * 100 + '%',
-                  top: Math.random() * 100 + '%',
-                  animationDelay: Math.random() * 2 + 's',
-                }}
-              />
-            ))}
-            
-            {/* Recording pulse effect */}
-            <div 
-              className="absolute inset-0 rounded-2xl animate-pulse"
-              style={{
-                background: `linear-gradient(45deg, transparent, ${theme.colors.primary}20, transparent)`,
-              }}
-            />
-          </>
-        )}
+        {/* Animated background particles and recording pulse effect removed */}
       </div>
 
       {/* Header */}
@@ -140,27 +101,10 @@ const KaraokeInterface: React.FC<KaraokeInterfaceProps> = ({
             )}
           </div>
           
-          {/* Recording indicator */}
-          {isRecording && (
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30">
-              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-white font-medium">Recording</span>
-            </div>
-          )}
+          {/* Recording indicator removed */}
         </div>
 
-        {/* Score display */}
-        {showScore && (
-          <div 
-            className="absolute top-0 right-0 px-6 py-3 rounded-full text-white font-bold text-xl animate-scale-in"
-            style={{
-              background: `linear-gradient(45deg, ${theme.colors.primary}, ${theme.colors.secondary})`,
-              boxShadow: theme.style === 'neon' ? `0 0 30px ${theme.colors.primary}50` : 'none',
-            }}
-          >
-            Score: {score}/100
-          </div>
-        )}
+        {/* Score display removed */}
       </div>
 
       {/* Lyrics Display */}
@@ -201,14 +145,7 @@ const KaraokeInterface: React.FC<KaraokeInterfaceProps> = ({
         )}
       </div>
 
-      {/* Instructions */}
-      {!isRecording && (
-        <div className="relative z-10 mt-6 text-center text-white/60">
-          <p className="text-sm">
-            Click the microphone button to start recording your performance
-          </p>
-        </div>
-      )}
+      {/* Instructions removed */}
     </div>
   );
 };

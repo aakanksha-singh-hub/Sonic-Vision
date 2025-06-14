@@ -60,9 +60,7 @@ const MusicPlayer: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState(themes[0]);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [showKaraoke, setShowKaraoke] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [karaokeScore, setKaraokeScore] = useState(0);
   const [particleEffects, setParticleEffects] = useState(true);
   const [hasLyrics, setHasLyrics] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -125,7 +123,7 @@ const MusicPlayer: React.FC = () => {
     setAudioUrl(URL.createObjectURL(file));
     setHasLyrics(false);
     clearLyrics();
-    setShowKaraoke(true);
+    setShowKaraoke(false);
   };
 
   const handlePreloadedSongSelect = (song: PreloadedSong) => {
@@ -144,7 +142,6 @@ const MusicPlayer: React.FC = () => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        // Initialize audio context if not already done
         if (!audioContextRef.current) {
           initializeAudioContext();
         }
@@ -172,23 +169,6 @@ const MusicPlayer: React.FC = () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const toggleRecording = () => {
-    setIsRecording(!isRecording);
-    if (!isRecording) {
-      toast({
-        title: "Recording started!",
-        description: "Sing along to earn points",
-      });
-    } else {
-      const score = Math.floor(Math.random() * 100) + 50;
-      setKaraokeScore(score);
-      toast({
-        title: "Recording stopped!",
-        description: `Your score: ${score}/100`,
-      });
-    }
-  };
-
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -198,14 +178,6 @@ const MusicPlayer: React.FC = () => {
   };
 
   const handleKaraokeToggle = () => {
-    if (!hasLyrics && !lyrics) {
-      toast({
-        title: "No lyrics found",
-        description: "Karaoke mode is only available for songs with lyrics. Play the song first to analyze it.",
-        variant: "destructive",
-      });
-      return;
-    }
     setShowKaraoke(!showKaraoke);
   };
 
@@ -291,18 +263,20 @@ const MusicPlayer: React.FC = () => {
                 <Settings className="w-4 h-4" />
               </button>
               
-              {/* Karaoke mode */}
-              <button
-                onClick={handleKaraokeToggle}
-                disabled={!audioFile || !hasLyrics}
-                className={`px-6 py-2 rounded-full text-sm font-light tracking-wide transition-all duration-300 relative disabled:opacity-50 disabled:cursor-not-allowed ${
-                  showKaraoke 
-                    ? 'bg-white/10 text-white border border-white/20' 
-                    : 'text-white/40 border border-white/5'
-                }`}
-              >
-                {hasLyrics ? 'Karaoke Mode' : 'Loading...'}
-              </button>
+              {/* Status indicator (formerly Karaoke mode button) */}
+              {audioUrl && (
+                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/5 border border-white/10 text-sm">
+                  <div 
+                    className="w-2 h-2 rounded-full"
+                    style={{ 
+                      backgroundColor: isPlaying ? selectedTheme.colors.primary : '#666'
+                    }}
+                  />
+                  <span className="text-white/60 text-sm font-light tracking-wide">
+                    {isPlaying ? 'Playing' : 'Ready'}
+                  </span>
+                </div>
+              )}
             </div>
             
             {/* Status indicator */}
@@ -358,7 +332,13 @@ const MusicPlayer: React.FC = () => {
         <div className="flex justify-center mb-8">
           <div className="bg-white/5 rounded-full p-1 inline-flex">
             <button
-              onClick={() => setMode('upload')}
+              onClick={() => {
+                setMode('upload');
+                clearLyrics();
+                setAudioFile(null);
+                setAudioUrl(null);
+                setShowKaraoke(false);
+              }}
               className={`px-6 py-2 rounded-full transition-all duration-300 ${
                 mode === 'upload'
                   ? 'bg-white/20 text-white'
@@ -368,7 +348,14 @@ const MusicPlayer: React.FC = () => {
               Upload Song
             </button>
             <button
-              onClick={() => setMode('karaoke')}
+              onClick={() => {
+                setMode('karaoke');
+                clearLyrics();
+                setAudioFile(null);
+                setAudioUrl(null);
+                setSelectedPreloadedSong(null);
+                setShowKaraoke(true);
+              }}
               className={`px-6 py-2 rounded-full transition-all duration-300 ${
                 mode === 'karaoke'
                   ? 'bg-white/20 text-white'
@@ -444,35 +431,6 @@ const MusicPlayer: React.FC = () => {
                   <Play className="w-8 h-8" />
                 }
               </button>
-
-              {showKaraoke && (
-                <button
-                  onClick={toggleRecording}
-                  disabled={!audioUrl || !isPlaying}
-                  className={`group p-5 rounded-full border border-white/10 transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed ${
-                    isRecording 
-                      ? 'bg-red-500/20 text-red-400 border-red-500/30' 
-                      : 'bg-white/5 text-white/80 hover:bg-white/10'
-                  }`}
-                >
-                  <Mic className="w-6 h-6" />
-                </button>
-              )}
-            </div>
-
-            {/* Status */}
-            <div className="mt-12 text-center">
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-full">
-                <div 
-                  className="w-2 h-2 rounded-full"
-                  style={{ 
-                    backgroundColor: isPlaying ? selectedTheme.colors.primary : '#666'
-                  }}
-                />
-                <span className="text-white/60 text-sm font-light tracking-wide">
-                  {isPlaying ? 'Playing' : 'Ready'}
-                </span>
-              </div>
             </div>
           </div>
         )}
@@ -488,13 +446,11 @@ const MusicPlayer: React.FC = () => {
           />
         </div>
 
-        {/* Karaoke Interface Display */}
-        {showKaraoke && (
+        {/* Karaoke Interface Display - Only render if in Karaoke Mode and showKaraoke is true */}
+        {mode === 'karaoke' && showKaraoke && (
           <div className="bg-white/[0.02] backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden mt-12">
             <KaraokeInterface 
               currentTime={currentTime}
-              isRecording={isRecording}
-              score={karaokeScore}
               theme={selectedTheme}
               lyrics={lyrics}
               artist={artist}
