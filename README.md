@@ -4,6 +4,11 @@ Interactive music visualization and karaoke experience.
 
 This application allows users to either upload their own audio files for music visualization or enjoy a karaoke experience with preloaded songs that come with embedded lyrics.
 
+## 📽️ Demo Video
+
+[![Watch the demo](https://img.youtube.com/vi/HJd6JR0qQXs/0.jpg)](https://youtu.be/HJd6JR0qQXs)
+
+
 ## Features:
 - **Upload Song Mode**: Upload your own MP3/WAV files for audio visualization.
 - **Karaoke Mode**: Select from a curated list of 5 preloaded songs with synchronized lyrics for a seamless karaoke experience.
