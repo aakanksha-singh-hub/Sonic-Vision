@@ -6,7 +6,7 @@ This application allows users to either upload their own audio files for music v
 
 ## 📽️ Demo Video
 
-[![Watch the demo](https://img.youtube.com/vi/HJd6JR0qQXs/0.jpg)](https://youtu.be/HJd6JR0qQXs)
+[![Watch the demo](https://img.youtube.com/vi/7kRhsTeaXy8/0.jpg)](https://youtu.be/7kRhsTeaXy8)
 
 
 ## Features:
